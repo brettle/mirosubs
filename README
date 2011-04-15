@@ -34,9 +34,10 @@ To run the development version:
    $ pip install -r requirements.txt
        note: you'll need mercurial installed to make this last command work.
 
-6. Check out google closure into directory of your choice: svn checkout 
-   http://closure-library.googlecode.com/svn/trunk/ <directory>. Then 
-   symlink media/js/closure-library to the checkout location. From the 
+6. Check out google closure into directory of your choice: 
+   $ svn checkout -r 145 http://closure-library.googlecode.com/svn/trunk/ <directory>
+   
+   Then symlink media/js/closure-library to the checkout location. From the 
    mirosubs directory in step 1:
 
    $ cd media/js
@@ -48,11 +49,11 @@ To run the development version:
 8. From the mirosubs directory created in step 1, first create the 
    database with
 
-       python manage.py syncdb
+       python manage.py syncdb --all
 
    Then update the database with
 
-       python manage.py migrate
+       python manage.py migrate --fake
 
    SQLLite warnings are okay. Then run the site with:
 
