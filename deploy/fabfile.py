@@ -76,7 +76,7 @@ def syncdb():
     env.host_string = DEV_HOST
     with cd(os.path.join(env.static_dir, 'mirosubs')):
         _git_pull()
-        run('{0}/env/bin/python manage.py syncdb'
+        run('{0}/env/bin/python manage.py syncdb '
             '--settings=unisubs_settings'.format(env.static_dir))
         if env.separate_sentry_db:
             run('{0}/env/bin/python manage.py syncdb '
@@ -89,6 +89,10 @@ def migrate(app_name=''):
         _git_pull()
         run('yes no | {0}/env/bin/python manage.py migrate {1} --settings=unisubs_settings'.format(
                 env.static_dir, app_name))
+        if env.separate_sentry_db:
+            run('{0}/env/bin/python manage.py migrate sentry '
+                '--database=sentry --settings=unisubs_settings'.format(
+                    env.static_dir))
     _bounce_memcached()
 
 def migrate_fake(app_name):
@@ -161,7 +165,7 @@ def clear_permissions():
         _clear_permissions('{0}/mirosubs'.format(env.web_dir))    
 
 def _git_pull():
-    run('git pull')
+    run('git pull --rebase')
     run('chgrp pcf-web -R .git 2> /dev/null; /bin/true')
     run('chmod g+w -R .git 2> /dev/null; /bin/true')
 
@@ -186,7 +190,7 @@ def update_web():
             env.warn_only = False
             run('{0} deploy/create_commit_file.py'.format(python_exe))
             run('touch deploy/unisubs.wsgi')
-        _bounce_celeryd()
+    _bounce_celeryd()
 
 def _bounce_memcached():
     if env.admin_dir:
@@ -196,6 +200,10 @@ def _bounce_memcached():
     sudo(env.memcached_bounce_cmd)
 
 def _bounce_celeryd():
+    if env.admin_dir:
+        env.host_string = ADMIN_HOST
+    else:
+        env.host_string = DEV_HOST
     sudo('/etc/init.d/celeryd restart')
 
 def _update_static(dir):
