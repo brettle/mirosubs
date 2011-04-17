@@ -33,6 +33,9 @@ To run the development version:
    # this is the mirosubs directory you cloned from git, not the parent you created the virtualenv in.
    $ pip install -r requirements.txt
        note: you'll need mercurial installed to make this last command work.
+       note 2: you'll need the development package for libjpeg (e.g. libjpeg-devel) installed for to
+       ensure that the Python Imaging Library is built with JPEG support, which is required for at
+       least one mirosubs unit test to pass.
 
 6. Check out google closure into directory of your choice: 
    $ svn checkout -r 145 http://closure-library.googlecode.com/svn/trunk/ <directory>
